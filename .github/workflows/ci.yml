@@ -37,3 +37,6 @@ jobs:
 
       - name: Build
         run: go mod download && go build -v main.go
+
+      - name: Run tests
+        run: go test -v ./...
