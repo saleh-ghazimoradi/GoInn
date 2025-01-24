@@ -3,8 +3,6 @@ ifneq (,$(wildcard ./app.env))
 	export $(shell sed 's/=.*//' app.env)
 endif
 
-MIGRATE_PATH = ./scripts/migrations
-DATABASE_URL = ${DB_SOURCE}
 
 format:
 	@echo "Applying go fmt to the project"
