@@ -4,6 +4,7 @@ Copyright © 2025 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"github.com/saleh-ghazimoradi/GoInn/config"
 	"log"
 	"os"
 	"time"
