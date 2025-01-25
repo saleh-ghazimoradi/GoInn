@@ -21,6 +21,7 @@ type DBConfig struct {
 	DbPassword string        `env:"DB_PASSWORD,required"`
 	DbName     string        `env:"DB_NAME,required"`
 	DbTimeout  time.Duration `env:"DB_TIMEOUT,required"`
+	DbUri      string        `env:"DB_URI,required"`
 }
 
 type ServerConfig struct {
