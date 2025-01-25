@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/saleh-ghazimoradi/GoInn/internal"
 
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,9 @@ var httpCmd = &cobra.Command{
 	Short: "A brief description of your command",
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println("http called")
+		if err := internal.Server(); err != nil {
+			panic(err)
+		}
 	},
 }
 

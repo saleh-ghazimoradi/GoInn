@@ -4,6 +4,7 @@ import (
 	"github.com/caarlos0/env"
 	"github.com/joho/godotenv"
 	"log"
+	"time"
 )
 
 var AppConfig *Config
@@ -14,14 +15,18 @@ type Config struct {
 }
 
 type DBConfig struct {
-	DbHost     string `env:"DB_HOST,required"`
-	DbPort     string `env:"DB_PORT,required"`
-	DbUser     string `env:"DB_USER,required"`
-	DbPassword string `env:"DB_PASSWORD,required"`
-	DbName     string `env:"DB_NAME,required"`
+	DbHost     string        `env:"DB_HOST,required"`
+	DbPort     string        `env:"DB_PORT,required"`
+	DbUser     string        `env:"DB_USER,required"`
+	DbPassword string        `env:"DB_PASSWORD,required"`
+	DbName     string        `env:"DB_NAME,required"`
+	DbTimeout  time.Duration `env:"DB_TIMEOUT,required"`
 }
 
 type ServerConfig struct {
+	Port    string `env:"SERVER_PORT,required"`
+	Version string `env:"SERVER_VERSION,required"`
+	ENV     string `env:"SERVER_ENV,required"`
 }
 
 func LoadConfig() error {
