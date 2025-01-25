@@ -13,7 +13,7 @@ func RegisterRoutes(app *fiber.App, db *mongo.Database) {
 	userRepository := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)
-	
+
 	healthRoutes(app, health)
-	userRoutes(app)
+	userRoutes(app, userHandler)
 }
