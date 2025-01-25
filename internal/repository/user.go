@@ -18,8 +18,12 @@ type userRepository struct {
 }
 
 func (u *userRepository) GetUserById(ctx context.Context, id string) (*service_models.User, error) {
+	oid, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		return nil, err
+	}
 	var user service_models.User
-	if err := u.collection.FindOne(ctx, bson.M{"_id": primitive.ObjectIDFromHex(id)}).Decode(&user); err != nil {
+	if err := u.collection.FindOne(ctx, bson.M{"_id": oid}).Decode(&user); err != nil {
 		return nil, err
 	}
 	return &user, nil
@@ -35,7 +39,7 @@ func (u *userRepository) GetUsers(ctx context.Context) ([]*service_models.User, 
 	if err = cursor.Decode(&users); err != nil {
 		return nil, err
 	}
-	
+
 	return users, nil
 }
 
