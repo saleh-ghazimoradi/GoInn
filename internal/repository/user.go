@@ -11,10 +11,20 @@ import (
 type UserRepository interface {
 	GetUserById(ctx context.Context, id string) (*service_models.User, error)
 	GetUsers(ctx context.Context) ([]*service_models.User, error)
+	CreateUser(ctx context.Context, user *service_models.User) (*service_models.User, error)
 }
 
 type userRepository struct {
 	collection *mongo.Collection
+}
+
+func (u *userRepository) CreateUser(ctx context.Context, user *service_models.User) (*service_models.User, error) {
+	res, err := u.collection.InsertOne(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	user.Id = res.InsertedID.(primitive.ObjectID)
+	return user, nil
 }
 
 func (u *userRepository) GetUserById(ctx context.Context, id string) (*service_models.User, error) {

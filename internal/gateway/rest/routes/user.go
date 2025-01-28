@@ -7,6 +7,7 @@ import (
 
 func userRoutes(app *fiber.App, userHandler *handlers.UserHandler) {
 	v1 := app.Group("/v1")
+	v1.Post("/user", userHandler.CreateUserHandler)
 	v1.Get("/user", userHandler.GetUsersHandler)
 	v1.Get("/user/:id", userHandler.GetUserHandler)
 }

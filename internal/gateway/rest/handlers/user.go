@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"context"
 	"github.com/gofiber/fiber/v2"
+	"github.com/saleh-ghazimoradi/GoInn/internal/dto"
 	"github.com/saleh-ghazimoradi/GoInn/internal/service"
 	"net/http"
 )
@@ -11,10 +11,31 @@ type UserHandler struct {
 	userService service.UserService
 }
 
+func (u *UserHandler) CreateUserHandler(ctx *fiber.Ctx) error {
+	var user dto.User
+	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	us, err := u.userService.CreateUser(ctx.Context(), &user)
+	if err != nil {
+		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	return ctx.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"message": "user created",
+		"user":    us,
+	})
+}
+
 func (u *UserHandler) GetUserHandler(ctx *fiber.Ctx) error {
 	id := ctx.Params("id")
 
-	user, err := u.userService.GetUserById(context.Background(), id)
+	user, err := u.userService.GetUserById(ctx.Context(), id)
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
@@ -27,7 +48,7 @@ func (u *UserHandler) GetUserHandler(ctx *fiber.Ctx) error {
 }
 
 func (u *UserHandler) GetUsersHandler(ctx *fiber.Ctx) error {
-	users, err := u.userService.GetUsers(context.Background())
+	users, err := u.userService.GetUsers(ctx.Context())
 	if err != nil {
 		return ctx.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"message": err.Error(),
