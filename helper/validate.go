@@ -12,20 +12,21 @@ const (
 	minPasswordLen  = 7
 )
 
-func Validate(user *dto.User) error {
+func Validate(user *dto.User) map[string]string {
+	errors := map[string]string{}
 	if len(user.FirstName) < minFirstNameLen {
-		return fmt.Errorf("first name must be at least %d characters", minFirstNameLen)
+		errors["firstname"] = fmt.Sprintf("first name must be at least %d characters", minFirstNameLen)
 	}
 	if len(user.LastName) < minLastNameLen {
-		return fmt.Errorf("last name must be at least %d characters", minLastNameLen)
+		errors["lastname"] = fmt.Sprintf("last name must be at least %d characters", minLastNameLen)
 	}
 	if len(user.Password) < minPasswordLen {
-		return fmt.Errorf("password must be at least %d characters", minPasswordLen)
+		errors["password"] = fmt.Sprintf("password must be at least %d characters", minPasswordLen)
 	}
 	if !isEmailValid(user.Email) {
-		return fmt.Errorf("invalid email")
+		errors["email"] = fmt.Sprintf("invalid email")
 	}
-	return nil
+	return errors
 }
 
 func isEmailValid(email string) bool {

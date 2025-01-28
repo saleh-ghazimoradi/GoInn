@@ -21,9 +21,7 @@ func (u *UserHandler) CreateUserHandler(ctx *fiber.Ctx) error {
 	}
 
 	if err := helper.Validate(&user); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
-		})
+		return ctx.Status(fiber.StatusBadRequest).JSON(err)
 	}
 
 	us, err := u.userService.CreateUser(ctx.Context(), &user)
