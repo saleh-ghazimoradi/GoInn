@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"github.com/saleh-ghazimoradi/GoInn/helper"
 	"github.com/saleh-ghazimoradi/GoInn/internal/dto"
 	"github.com/saleh-ghazimoradi/GoInn/internal/service"
 	"net/http"
@@ -14,6 +15,12 @@ type UserHandler struct {
 func (u *UserHandler) CreateUserHandler(ctx *fiber.Ctx) error {
 	var user dto.User
 	if err := ctx.BodyParser(&user); err != nil {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": err.Error(),
+		})
+	}
+
+	if err := helper.Validate(&user); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
