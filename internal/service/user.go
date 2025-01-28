@@ -69,16 +69,6 @@ func (u *userService) UpdateUser(ctx context.Context, id string, input *dto.Upda
 	if input.LastName != nil {
 		existingUser.LastName = *input.LastName
 	}
-	if input.Email != nil {
-		existingUser.Email = *input.Email
-	}
-	if input.Password != nil {
-		hashedPassword, err := helper.CreateHashPassword(*input.Password)
-		if err != nil {
-			return nil, errors.New("failed to hash password")
-		}
-		existingUser.Password = hashedPassword
-	}
 
 	updatedUser, err := u.userRepository.UpdateUser(ctx, existingUser)
 	if err != nil {

@@ -86,6 +86,13 @@ func (u *UserHandler) UpdateUserHandler(ctx *fiber.Ctx) error {
 		})
 	}
 
+	validationErrors := helper.ValidateUpdateUser(&user)
+	if len(validationErrors) > 0 {
+		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": validationErrors,
+		})
+	}
+
 	if _, err := u.userService.UpdateUser(ctx.Context(), id, &user); err != nil {
 		switch {
 		case errors.Is(err, mongo.ErrNoDocuments):

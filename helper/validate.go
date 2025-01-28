@@ -34,3 +34,15 @@ func isEmailValid(email string) bool {
 	re := regexp.MustCompile(emailRegex)
 	return re.MatchString(email)
 }
+
+func ValidateUpdateUser(user *dto.UpdateUser) map[string]string {
+	errors := map[string]string{}
+
+	if user.FirstName != nil && len(*user.FirstName) < minFirstNameLen {
+		errors["firstname"] = fmt.Sprintf("first name must be at least %d characters", minFirstNameLen)
+	}
+	if user.LastName != nil && len(*user.LastName) < minLastNameLen {
+		errors["lastname"] = fmt.Sprintf("last name must be at least %d characters", minLastNameLen)
+	}
+	return errors
+}
