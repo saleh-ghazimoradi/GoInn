@@ -46,7 +46,7 @@ func (u *userRepository) GetUsers(ctx context.Context) ([]*service_models.User, 
 	}
 
 	var users []*service_models.User
-	if err = cursor.Decode(&users); err != nil {
+	if err = cursor.All(ctx, &users); err != nil {
 		return nil, err
 	}
 
