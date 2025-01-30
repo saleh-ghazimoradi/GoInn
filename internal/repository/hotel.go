@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"github.com/saleh-ghazimoradi/GoInn/internal/service/service_models"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type HotelRepository interface {
 	InsertHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error)
+	UpdateHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error)
 }
 
 type hotelRepository struct {
@@ -22,6 +24,17 @@ func (h *hotelRepository) InsertHotel(ctx context.Context, hotel *service_models
 		return nil, errors.New("error inserting hotel")
 	}
 	hotel.Id = res.InsertedID.(primitive.ObjectID)
+	return hotel, nil
+}
+
+func (h *hotelRepository) UpdateHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error) {
+	filter := bson.M{"_id": hotel.Id}
+	update := bson.M{"$set": hotel}
+	_, err := h.collection.UpdateOne(ctx, filter, update)
+	if err != nil {
+		return nil, errors.New("failed to update hotel")
+	}
+
 	return hotel, nil
 }
 

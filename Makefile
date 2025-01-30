@@ -23,5 +23,8 @@ dockerdown:
 http:
 	go run . http
 
+seed:
+	go run . seed
+
 # Declare targets that are not files
-.PHONY: format vet dockerup dockerdown http
+.PHONY: format vet dockerup dockerdown http seed
