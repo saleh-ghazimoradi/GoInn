@@ -11,6 +11,8 @@ import (
 
 type HotelRepository interface {
 	InsertHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error)
+	GetHotelById(ctx context.Context, id primitive.ObjectID) (*service_models.Hotel, error)
+	GetHotels(ctx context.Context) ([]*service_models.Hotel, error)
 	UpdateHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error)
 }
 
@@ -25,6 +27,28 @@ func (h *hotelRepository) InsertHotel(ctx context.Context, hotel *service_models
 	}
 	hotel.Id = res.InsertedID.(primitive.ObjectID)
 	return hotel, nil
+}
+
+func (h *hotelRepository) GetHotelById(ctx context.Context, id primitive.ObjectID) (*service_models.Hotel, error) {
+	var hotel service_models.Hotel
+	if err := h.collection.FindOne(ctx, bson.M{"_id": id}).Decode(&hotel); err != nil {
+		return nil, errors.New("hotel not found")
+	}
+	return &hotel, nil
+}
+
+func (h *hotelRepository) GetHotels(ctx context.Context) ([]*service_models.Hotel, error) {
+	cursor, err := h.collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, errors.New("error getting hotels")
+	}
+
+	var hotels []*service_models.Hotel
+	if err = cursor.All(ctx, &hotels); err != nil {
+		return nil, errors.New("failed to fetch hotels")
+	}
+
+	return hotels, nil
 }
 
 func (h *hotelRepository) UpdateHotel(ctx context.Context, hotel *service_models.Hotel) (*service_models.Hotel, error) {

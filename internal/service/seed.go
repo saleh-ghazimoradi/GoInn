@@ -122,6 +122,10 @@ func GenerateHotels(num int) []*service_models.Hotel {
 		"Seattle", "Las Vegas", "Austin", "Denver", "Orlando",
 	}
 
+	ratings := []int{
+		1, 2, 3, 4, 5,
+	}
+	
 	hotels := make([]*service_models.Hotel, num)
 	for i := 0; i < num; i++ {
 		hotels[i] = &service_models.Hotel{
@@ -129,6 +133,7 @@ func GenerateHotels(num int) []*service_models.Hotel {
 			Name:     fmt.Sprintf("%s %d", hotelNames[i%len(hotelNames)], i+1),
 			Location: locations[i%len(locations)],
 			Rooms:    []primitive.ObjectID{},
+			Rating:   ratings[i%len(ratings)],
 		}
 	}
 	return hotels

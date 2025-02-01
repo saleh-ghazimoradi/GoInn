@@ -8,4 +8,6 @@ import (
 func hotelRoutes(app *fiber.App, hotelHandler *handlers.HotelHandler) {
 	v1 := app.Group("/v1")
 	v1.Post("/hotel", hotelHandler.CreateHotel)
+	v1.Get("/hotel", hotelHandler.GetHotels)
+	v1.Get("/hotel/:id", hotelHandler.GetHotelById)
 }

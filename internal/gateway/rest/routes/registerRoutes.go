@@ -14,7 +14,7 @@ func RegisterRoutes(app *fiber.App, db *mongo.Database) {
 	hotelRepository := repository.NewHotelRepository(db)
 	roomRepository := repository.NewRoomRepository(db)
 	hotelService := service.NewHotelService(hotelRepository)
-	roomService := service.NewRoomService(roomRepository)
+	roomService := service.NewRoomService(roomRepository, hotelRepository)
 	hotelHandler := handlers.NewHotelHandler(hotelService)
 	userService := service.NewUserService(userRepository)
 	userHandler := handlers.NewUserHandler(userService)

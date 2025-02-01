@@ -6,6 +6,7 @@ type CreateHotel struct {
 	Name     string               `json:"name"`
 	Location string               `json:"location"`
 	Rooms    []primitive.ObjectID `json:"rooms"`
+	Rating   int                  `json:"rating"`
 }
 
 type RoomType int
