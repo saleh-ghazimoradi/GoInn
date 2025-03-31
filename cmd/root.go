@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"github.com/saleh-ghazimoradi/GoInn/config"
+	"github.com/saleh-ghazimoradi/GoInn/slg"
 	"os"
 	"time"
 
@@ -29,8 +31,9 @@ func init() {
 }
 
 func initConfig() {
-	//err := config.LoadConfig()
-	//if err != nil {
-	//	log.Fatal("there went something wrong while loading config file")
-	//}
+	err := config.LoadConfig()
+	if err != nil {
+		slg.Logger.Error("Failed to load config", "error", err)
+		return
+	}
 }
