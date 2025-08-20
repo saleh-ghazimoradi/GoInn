@@ -1,0 +1,36 @@
+name: GoInn
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:latest
+        env:
+          MONGO_INITDB_ROOT_USERNAME: ${{ secrets.MONGODB_USER }}
+          MONGO_INITDB_ROOT_PASSWORD: ${{ secrets.MONGODB_PASSWORD }}
+        ports:
+          - 27013:27017
+    steps:
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.24.1'
+        id: go
+
+      - name: Build
+        run: go mod download && go build -v main.go
+
+      - name: Run tests
+        run: go test -v ./...
