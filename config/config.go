@@ -13,8 +13,9 @@ var (
 )
 
 type Config struct {
-	Server Server
-	Mongo  Mongo
+	Server      Server
+	Mongo       Mongo
+	Application Application
 }
 
 type Server struct {
@@ -24,8 +25,6 @@ type Server struct {
 	WriteTimeout time.Duration `env:"SERVER_WRITE_TIMEOUT"`
 	IdleTimeout  time.Duration `env:"SERVER_IDLE_TIMEOUT"`
 	Timeout      time.Duration `env:"SERVER_TIMEOUT"`
-	Env          string        `env:"SERVER_ENV"`
-	Version      string        `env:"SERVER_VERSION"`
 }
 
 type Mongo struct {
@@ -34,9 +33,15 @@ type Mongo struct {
 	User        string        `env:"MONGODB_USER"`
 	Password    string        `env:"MONGODB_PASSWORD"`
 	Name        string        `env:"MONGODB_NAME"`
+	AuthSource  string        `env:"MONGODB_AUTH_SOURCE"`
 	MaxPoolSize uint64        `env:"MONGODB_MAX_POOL_SIZE"`
 	MinPoolSize uint64        `env:"MONGODB_MIN_POOL_SIZE"`
 	Timeout     time.Duration `env:"MONGODB_TIMEOUT"`
+}
+
+type Application struct {
+	Env     string `env:"APPLICATION_ENV"`
+	Version string `env:"APPLICATION_VERSION"`
 }
 
 func GetConfig() (*Config, error) {

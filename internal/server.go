@@ -36,7 +36,7 @@ func WithPort(port string) Option {
 
 func WithHandler(h http.Handler) Option {
 	return func(s *Server) {
-
+		s.Handler = h
 	}
 }
 
@@ -64,7 +64,7 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
-func (s *Server) Connect() {
+func (s *Server) Connect() error {
 	addr := fmt.Sprintf("%s:%s", s.Host, s.Port)
 	server := &http.Server{
 		Addr:         addr,
@@ -88,8 +88,9 @@ func (s *Server) Connect() {
 	case err := <-serverErrors:
 		if err != nil && err != http.ErrServerClosed {
 			fmt.Printf("Server error: %v\n", err)
-			panic(err)
+			return err
 		}
+		return nil
 	case <-stop:
 		fmt.Println("Received shutdown signal, initiating graceful shutdown...")
 
@@ -98,12 +99,14 @@ func (s *Server) Connect() {
 
 		if err := server.Shutdown(ctx); err != nil {
 			fmt.Printf("Server shutdown error: %v\n", err)
-			if err := server.Close(); err != nil {
-				fmt.Printf("Server close error: %v\n", err)
+			if closeErr := server.Close(); closeErr != nil {
+				fmt.Printf("Server close error: %v\n", closeErr)
+				return closeErr
 			}
-			panic(err)
+			return err
 		}
 		fmt.Println("Server gracefully shut down")
+		return nil
 	}
 }
 

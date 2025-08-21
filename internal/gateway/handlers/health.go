@@ -15,8 +15,8 @@ func (h *HealthHandler) HealthCheckHandler(w http.ResponseWriter, r *http.Reques
 	env := helper.Envelope{
 		"status": "available",
 		"system_info": map[string]any{
-			"environment": h.config.Server.Env,
-			"version":     h.config.Server.Version,
+			"environment": h.config.Application.Env,
+			"version":     h.config.Application.Version,
 		},
 	}
 	if err := helper.WriteJSON(w, http.StatusOK, env, nil); err != nil {
@@ -24,6 +24,9 @@ func (h *HealthHandler) HealthCheckHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func NewHealthHandler() *HealthHandler {
-	return &HealthHandler{}
+func NewHealthHandler(config config.Config, error helper.Error) *HealthHandler {
+	return &HealthHandler{
+		config: config,
+		error:  error,
+	}
 }

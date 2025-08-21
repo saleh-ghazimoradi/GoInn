@@ -15,6 +15,7 @@ type MongoDB struct {
 	User        string
 	Pass        string
 	DBName      string
+	AuthSource  string
 	MaxPoolSize uint64
 	MinPoolSize uint64
 	Timeout     time.Duration
@@ -70,9 +71,18 @@ func WithTimeout(timeout time.Duration) Option {
 	}
 }
 
+func WithAuthSource(authSource string) Option {
+	return func(db *MongoDB) {
+		db.AuthSource = authSource
+	}
+}
+
 func (m *MongoDB) URI() string {
-	return fmt.Sprintf("mongodb://%s:%s@%s:%d/%s",
-		m.User, m.Pass, m.Host, m.Port, m.DBName)
+	if m.User != "" && m.Pass != "" {
+		return fmt.Sprintf("mongodb://%s:%s@%s:%d/%s?authSource=%s",
+			m.User, m.Pass, m.Host, m.Port, m.DBName, m.AuthSource)
+	}
+	return fmt.Sprintf("mongodb://%s:%d", m.Host, m.Port)
 }
 
 func (m *MongoDB) Connect() (*mongo.Client, *mongo.Database, error) {
@@ -100,6 +110,10 @@ func (m *MongoDB) Connect() (*mongo.Client, *mongo.Database, error) {
 	}
 
 	return client, client.Database(m.DBName), nil
+}
+
+func (m *MongoDB) Disconnect(ctx context.Context, client *mongo.Client) error {
+	return client.Disconnect(ctx)
 }
 
 func NewMongoDB(opts ...Option) *MongoDB {
