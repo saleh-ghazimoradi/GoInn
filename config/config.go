@@ -24,6 +24,8 @@ type Server struct {
 	WriteTimeout time.Duration `env:"SERVER_WRITE_TIMEOUT"`
 	IdleTimeout  time.Duration `env:"SERVER_IDLE_TIMEOUT"`
 	Timeout      time.Duration `env:"SERVER_TIMEOUT"`
+	Env          string        `env:"SERVER_ENV"`
+	Version      string        `env:"SERVER_VERSION"`
 }
 
 type Mongo struct {

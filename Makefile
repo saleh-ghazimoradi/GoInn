@@ -8,3 +8,6 @@ vet:
 	go vet ./...
 http: fmt vet
 	go run . http
+
+test:
+	go test -v ./...
