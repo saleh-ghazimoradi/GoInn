@@ -34,21 +34,27 @@ func WithPort(port string) Option {
 	}
 }
 
+func WithHandler(h http.Handler) Option {
+	return func(s *Server) {
+
+	}
+}
+
 func WithReadTimeout(timeout time.Duration) Option {
 	return func(s *Server) {
-		s.Timeout = timeout
+		s.ReadTimeout = timeout
 	}
 }
 
 func WithWriteTimeout(timeout time.Duration) Option {
 	return func(s *Server) {
-		s.Timeout = timeout
+		s.WriteTimeout = timeout
 	}
 }
 
 func WithIdleTimeout(timeout time.Duration) Option {
 	return func(s *Server) {
-		s.Timeout = timeout
+		s.IdleTimeout = timeout
 	}
 }
 
