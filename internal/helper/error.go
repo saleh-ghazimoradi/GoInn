@@ -7,7 +7,7 @@ import (
 )
 
 type Error struct {
-	logger logger.Logger
+	logger *logger.Logger
 }
 
 func (e *Error) LogError(r *http.Request, err error) {
@@ -90,6 +90,6 @@ func (e *Error) InactiveAccountResponse(w http.ResponseWriter, r *http.Request) 
 	e.ErrorResponse(w, r, http.StatusForbidden, message)
 }
 
-func NewError(logger logger.Logger) *Error {
+func NewError(logger *logger.Logger) *Error {
 	return &Error{logger: logger}
 }

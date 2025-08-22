@@ -7,8 +7,8 @@ import (
 )
 
 type HealthHandler struct {
-	config config.Config
-	error  helper.Error
+	config *config.Config
+	error  *helper.Error
 }
 
 func (h *HealthHandler) HealthCheckHandler(w http.ResponseWriter, r *http.Request) {
@@ -24,7 +24,7 @@ func (h *HealthHandler) HealthCheckHandler(w http.ResponseWriter, r *http.Reques
 	}
 }
 
-func NewHealthHandler(config config.Config, error helper.Error) *HealthHandler {
+func NewHealthHandler(config *config.Config, error *helper.Error) *HealthHandler {
 	return &HealthHandler{
 		config: config,
 		error:  error,

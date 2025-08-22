@@ -6,6 +6,6 @@ import (
 	"net/http"
 )
 
-func HealthRoute(router httprouter.Router, handler *handlers.HealthHandler) {
+func HealthRoute(router *httprouter.Router, handler *handlers.HealthHandler) {
 	router.HandlerFunc(http.MethodGet, "/v1/health", handler.HealthCheckHandler)
 }

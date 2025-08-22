@@ -3,8 +3,14 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/julienschmidt/httprouter"
 	"github.com/saleh-ghazimoradi/GoInn/config"
 	gateway "github.com/saleh-ghazimoradi/GoInn/internal"
+	"github.com/saleh-ghazimoradi/GoInn/internal/gateway/handlers"
+	"github.com/saleh-ghazimoradi/GoInn/internal/gateway/routes"
+	"github.com/saleh-ghazimoradi/GoInn/internal/helper"
+	"github.com/saleh-ghazimoradi/GoInn/internal/repository"
+	"github.com/saleh-ghazimoradi/GoInn/internal/service"
 	"github.com/saleh-ghazimoradi/GoInn/logger"
 	"github.com/saleh-ghazimoradi/GoInn/utils"
 	"log/slog"
@@ -28,9 +34,17 @@ var httpCmd = &cobra.Command{
 			logger.WithSource(true),
 			logger.WithOutput(os.Stdout),
 		)
-		defer log.Close()
 
-		defer log.Close()
+		defer func() {
+			if err := log.Close(); err != nil {
+				log.Error("error closing logger: %v", err)
+			}
+		}()
+
+		// -------------------------------
+		// Error
+		// -------------------------------
+		errorResponses := helper.NewError(log)
 
 		// -------------------------------
 		// Config
@@ -70,12 +84,34 @@ var httpCmd = &cobra.Command{
 		}()
 
 		// -------------------------------
+		// Repositories
+		// -------------------------------
+		userRepository := repository.NewUserRepository(db, "users", log)
+
+		// -------------------------------
+		// Services
+		// -------------------------------
+		userService := service.NewUserService(userRepository)
+		// -------------------------------
+		// Handlers
+		// -------------------------------
+		healthHandler := handlers.NewHealthHandler(cfg, errorResponses)
+		userHandler := handlers.NewUserHandler(userService, errorResponses)
+
+		// -------------------------------
+		// HTTP Router
+		// -------------------------------
+		r := httprouter.New()
+		routes.HealthRoute(r, healthHandler)
+		routes.UserRoutes(r, userHandler)
+
+		// -------------------------------
 		// HTTP Server
 		// -------------------------------
 		server := gateway.NewServer(
 			gateway.WithHost(cfg.Server.Host),
 			gateway.WithPort(cfg.Server.Port),
-			gateway.WithHandler(nil), // TODO: inject your handler/router
+			gateway.WithHandler(r),
 			gateway.WithReadTimeout(cfg.Server.ReadTimeout),
 			gateway.WithWriteTimeout(cfg.Server.WriteTimeout),
 			gateway.WithIdleTimeout(cfg.Server.IdleTimeout),
